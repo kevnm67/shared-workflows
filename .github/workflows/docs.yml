@@ -1,0 +1,62 @@
+name: Documentation
+
+on:
+  workflow_call:
+    inputs:
+      readme_path:
+        description: "Path to README file for TOC generation"
+        type: string
+        default: "README.md"
+      wiki_sync:
+        description: "Sync docs to GitHub Wiki"
+        type: boolean
+        default: false
+      lint_strict:
+        description: "Fail on markdownlint warnings"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+          fetch-depth: 0
+
+      - name: Generate TOC
+        uses: technote-space/toc-generator@v4
+        with:
+          TARGET_PATHS: ${{ inputs.readme_path }}
+          FOLDING: false
+
+      - name: Lint Markdown
+        uses: DavidAnson/markdownlint-cli2-action@v19
+        with:
+          globs: "**/*.md"
+          fix: true
+        continue-on-error: ${{ !inputs.lint_strict }}
+
+      - name: Check links
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: "--no-progress **/*.md"
+          fail: false
+
+      - name: Sync to Wiki
+        if: inputs.wiki_sync
+        uses: SwiftDocOrg/github-wiki-publish-action@v1
+        with:
+          path: docs
+        env:
+          GH_PERSONAL_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Auto-commit changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "docs: update TOC and fix lint [skip ci]"
+          file_pattern: "**/*.md"

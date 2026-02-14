@@ -1,0 +1,46 @@
+ci:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '.circleci/**'
+      - '.github/**'
+
+fastlane:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'fastlane/**'
+
+docs:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '**/*.md'
+      - 'docs/**'
+
+tests:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '**/*Tests*/**'
+      - '**/*Specs*/**'
+
+ui:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '**/*View*'
+      - '**/*UI*'
+      - '**/*.xib'
+      - '**/*.storyboard'
+
+dependencies:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'Package.swift'
+      - 'Package.resolved'
+      - 'Gemfile'
+      - 'Gemfile.lock'
+      - 'Podfile'
+      - 'Podfile.lock'
+
+config:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'project.yml'
+      - '**/*.xcconfig'

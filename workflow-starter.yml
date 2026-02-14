@@ -1,0 +1,43 @@
+# Copy this to .github/workflows/shared.yml in your repo
+name: Shared
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: "0 9 * * 1" # Weekly Monday 9am (for stale check)
+
+jobs:
+  docs:
+    uses: kevnm67/shared-workflows/.github/workflows/docs.yml@main
+    # with:
+    #   readme_path: README.md
+    #   wiki_sync: false
+    #   lint_strict: false
+
+  swift-lint:
+    if: github.event_name == 'pull_request'
+    uses: kevnm67/shared-workflows/.github/workflows/swift-lint.yml@main
+    # with:
+    #   strict: false
+    #   swiftlint_config: .swiftlint.yml
+
+  pr-labeler:
+    if: github.event_name == 'pull_request'
+    uses: kevnm67/shared-workflows/.github/workflows/pr-labeler.yml@main
+
+  pr-size:
+    if: github.event_name == 'pull_request'
+    uses: kevnm67/shared-workflows/.github/workflows/pr-size.yml@main
+
+  stale:
+    if: github.event_name == 'schedule'
+    uses: kevnm67/shared-workflows/.github/workflows/stale.yml@main
+    # with:
+    #   days_before_stale: 30
+    #   days_before_close: 7
+
+  release-drafter:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    uses: kevnm67/shared-workflows/.github/workflows/release-drafter.yml@main

@@ -1,0 +1,33 @@
+name: SwiftLint
+
+on:
+  workflow_call:
+    inputs:
+      swiftlint_config:
+        description: "Path to SwiftLint configuration file"
+        type: string
+        default: ".swiftlint.yml"
+      strict:
+        description: "Fail on warnings"
+        type: boolean
+        default: false
+      reporter:
+        description: "SwiftLint reporter format"
+        type: string
+        default: "github-actions-logging"
+
+jobs:
+  swiftlint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run SwiftLint
+        uses: norio-nomura/action-swiftlint@3.2.1
+        with:
+          args: >-
+            --config ${{ inputs.swiftlint_config }}
+            --reporter ${{ inputs.reporter }}
+            ${{ inputs.strict && '--strict' || '' }}
+        env:
+          DIFF_BASE: ${{ github.event.pull_request.base.sha }}

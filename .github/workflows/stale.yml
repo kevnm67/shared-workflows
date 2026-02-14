@@ -1,0 +1,36 @@
+name: Stale Issues & PRs
+
+on:
+  workflow_call:
+    inputs:
+      days_before_stale:
+        description: "Days before marking as stale"
+        type: number
+        default: 30
+      days_before_close:
+        description: "Days after stale before closing"
+        type: number
+        default: 7
+      stale_label:
+        description: "Label to apply to stale items"
+        type: string
+        default: "stale"
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v9
+        with:
+          days-before-stale: ${{ inputs.days_before_stale }}
+          days-before-close: ${{ inputs.days_before_close }}
+          stale-issue-label: ${{ inputs.stale_label }}
+          stale-pr-label: ${{ inputs.stale_label }}
+          stale-issue-message: "This issue has been automatically marked as stale because it has not had recent activity. It will be closed if no further activity occurs."
+          stale-pr-message: "This PR has been automatically marked as stale because it has not had recent activity. It will be closed if no further activity occurs."
+          exempt-issue-labels: "pinned,security,bug"
+          exempt-pr-labels: "pinned,security"
