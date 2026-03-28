@@ -24,7 +24,7 @@ jobs:
   stale:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/stale@v9
+      - uses: actions/stale@v10
         with:
           days-before-stale: ${{ inputs.days_before_stale }}
           days-before-close: ${{ inputs.days_before_close }}
