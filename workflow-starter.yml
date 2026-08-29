@@ -8,8 +8,16 @@ on:
   schedule:
     - cron: "0 9 * * 1" # Weekly Monday 9am (for stale check)
 
+# Each called workflow declares its own permissions, and a caller can only
+# DOWNGRADE the GITHUB_TOKEN it passes down — never exceed it. In a repo
+# whose default workflow token is read-only, omitting these blocks makes the
+# whole run fail at startup with no jobs created. Granted per job, least
+# privilege.
 jobs:
   docs:
+    permissions:
+      contents: write
+      pull-requests: write
     uses: kevnm67/shared-workflows/.github/workflows/docs.yml@main
     # with:
     #   readme_path: README.md
@@ -18,6 +26,8 @@ jobs:
 
   swift-lint:
     if: github.event_name == 'pull_request'
+    permissions:
+      contents: read
     uses: kevnm67/shared-workflows/.github/workflows/swift-lint.yml@main
     # with:
     #   strict: false
@@ -25,14 +35,22 @@ jobs:
 
   pr-labeler:
     if: github.event_name == 'pull_request'
+    permissions:
+      contents: read
+      pull-requests: write
     uses: kevnm67/shared-workflows/.github/workflows/pr-labeler.yml@main
 
   pr-size:
     if: github.event_name == 'pull_request'
+    permissions:
+      pull-requests: write
     uses: kevnm67/shared-workflows/.github/workflows/pr-size.yml@main
 
   stale:
     if: github.event_name == 'schedule'
+    permissions:
+      issues: write
+      pull-requests: write
     uses: kevnm67/shared-workflows/.github/workflows/stale.yml@main
     # with:
     #   days_before_stale: 30
@@ -40,4 +58,7 @@ jobs:
 
   release-drafter:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: write
+      pull-requests: read
     uses: kevnm67/shared-workflows/.github/workflows/release-drafter.yml@main
