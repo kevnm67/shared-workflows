@@ -4,6 +4,11 @@ on:
   workflow_call:
 
 permissions:
+  # actions/checkout needs contents: read. A called workflow's permissions
+  # block is the complete set, so omitting it leaves contents at `none` and
+  # the checkout fails with "Repository not found" — on private repos only,
+  # since public ones fetch fine unauthenticated.
+  contents: read
   pull-requests: write
 
 jobs:
