@@ -18,6 +18,13 @@ on:
 
 permissions:
   contents: write
+  # technote-space/toc-generator looks up the PR for the branch via
+  # GET /repos/{owner}/{repo}/pulls. A called workflow's permissions block
+  # is the COMPLETE set — every scope omitted here is `none`, and a caller
+  # cannot add scopes back (it may only downgrade). Without this, the job
+  # fails on pull_request events with "Resource not accessible by
+  # integration".
+  pull-requests: write
 
 jobs:
   docs:
