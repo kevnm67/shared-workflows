@@ -43,6 +43,7 @@ jobs:
   pr-size:
     if: github.event_name == 'pull_request'
     permissions:
+      contents: read
       pull-requests: write
     uses: kevnm67/shared-workflows/.github/workflows/pr-size.yml@main
 
